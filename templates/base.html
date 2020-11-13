@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+		<!--Bootstrap CSS-->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+		{% block libraries %}
+		{% endblock %}
+		<title>
+			{% block title  %}{% endblock %}
+		</title>
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0a1845;">
+			<a class="navbar-brand" href="#" style="width: 50px; font-family: Comic Sans MS, cursive, sans-serif; font-size:150%;"><b>2M</b></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="#" style="width: 80px; font-size:120%; font-family: Comic Sans MS, cursive, sans-serif;">About<span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item active">
+						<a class="nav-link" href="#" style="width: 80px; font-size:120%; font-family: Comic Sans MS, cursive, sans-serif;">Team</a>
+					</li>
+      					<li class="nav-item dropdown">
+        					<a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 80px; font-size:120%; font-family: Comic Sans MS, cursive, sans-serif;">Products</a>
+        		<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          			<a class="dropdown-item" href="#">Action</a>
+          			<a class="dropdown-item" href="#">Another action</a>
+          			<div class="dropdown-divider"></div>
+          				<a class="dropdown-item" href="#">Something else here</a>
+        		</div>
+      					</li>
+    			</ul>
+     			<a class="navbar-brand" href="https://github.com/mauriciomani"><img src="{{ url_for('static',filename='github.png') }}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy"></a>
+			<a class="navbar-brand" href="https://mx.linkedin.com/public-profile/in/josemauriciomani"><img src="{{ url_for('static',filename='linkedin.png') }}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy"></a>
+		</nav>
+		{% block content %}
+		{% endblock %}
+	</body>
+	{% block footer %}
+	{% endblock %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</html>
