@@ -15,6 +15,15 @@ section {
 	font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
+.container_blog {
+	padding-right: 120px;
+	padding-left: 120px;
+	padding-bottom: 50px;
+	padding-top: 50px;
+	font-family: "Comic Sans MS", cursive, sans-serif;
+	text-align : justify;
+}
+
 header {
 	padding: 230px 0 200px;
 	padding-top: 230px;

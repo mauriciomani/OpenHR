@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %} Limitación problema {% endblock %}
+{% block content %}
+<div class="container_blog">
+<h1 align="left">¿Por qué es tan importante la delimitación del problema?</h1>
+<b>Escrito por Mauricio Mani</b>
+<br />
+<br />
+
+<p>
+<h4>Introducción</h4>
+El ejemplo que utilizaremos será el presentado en un hackathon por uno de los holdings cerveceros más grandes del mundo, dónde se tenía que resolver un <b>problema de logística</b>.
+Con este ejemplo, podremos enseñar la importancia de entender bien el problema y luego delimitarlo, algo que aprendemos muy bien cundo realizamos la tésis, pero que al parecer se olvida después.
+Si tu tienes un problema bien delimitado es más fácil de encontrar estrategias para resolverlo, pero al mismo tiempo existe un reto mayor, lo cual puede mantener motivados a tus colaboradores, ya que conoces bien cuando el problema a quedado como resuelto y sabes como medir la eficacia de los resultados.
+Lo que haremos en este pequeño ensayo es estudiar qué hubiera pasado si el problema no hubiera estado delimitado, analizando los distintos escenarios de actuación del equipo de datos.
+Poniendo enfásis en la necesidad de traducir al negocio y de desarrollar productos de datos de la mano con las distintas areas funcionales de la organización.
+</p>
+
+<p>
+<h4>El reto</h4>
+El reto era muy sencillo y no nos concentraremos aquí en las posibles técnicas de limpieza de datos y tampoco de análisis exploratorios de datos. Este último es muy interesante, ya que no quieres limitar la creatividad durante el EDA, pero si es necesario saber por donde empezar, por lo que es muy importante saber porque el negocio ha decidido seguir un procedimiento específico y se podría analizar, pero sin perder de vista el objetivo de lo que se está haciendo.
+Tenemos una tabla con agencias, que serían los valores únicos y no repetidos de nuestra tabla (id), tenemoos la frecuencia de entrega durante la semana, el volumén de entrega y la latitud y longitud de la agencia (que puede ser pensada como tienda).
+</p>
+
+<p>
+<h4>Los casos</h4>
+<b>(1)</b> Primero supongamos que nos han puesto a realizar "ciencia de datos" (el peor caso). Son muchas las cosas que se pueden realizar, por ejemplo, se podría predecir el volumén de entrega, tal vez aún mejor si aumentamos la cantidad de atributos en nuestra tabla. 
+También podríamos realizar un análisis de densidad de las distintas tiendas o de mejores rutas que podemos tomar, algo así como el TSP (Travelling Salesman Problem), entre muchísimas cosas que se le pueden ocurrir al equipo. 
+Todas las anteriores pueden tomar mucho tiempo en ser realizadas y tal vez no es lo que el equipo de logística necesita. <br>
+<b>(2)</b> Ahora supongamos que creemos conocer lo que necesitan, ya que hemos sido dichos que el problema es que necesitan repartir por zonas la cerveza. Excelecente, podemos pensar en una tecnica de clustering o de locación de facilidades (centro de gravedad, problema de Weber, MILP). 
+Pero tu eres un entusiasta de las aproximaciones no supervisadas y decides usar un modelo de clustering, te tomas tu tiempo para encontrar k o utilizas un modelo jerarquíco o cualquier método que se te ocurra.
+Cuando haz terminado te diriges al equipo de logística y resulta que tu <i>k</i> óptima no es posible para la infraestructura actual y que es imposible en el mediano plazo.<br>
+<b>(3)</b> Ya estamos cerca de alinearnos con el equipo y encontrar que es lo que se necesita exactamente. 
+Nos han dicho que tenemos 6 zonas de reparto (por los seis días de la semana laborables) y necesitamos encontrar en que días repartir a cada una de las agencias. En pocas palabras cada una de las agencias pertenece a un grupo, de los seis posibles.
+Ahora conocemos <i>k</i> y probamos distintas soluciones de clustering, pero al acudir con el producto al equipo, no esta bien, ya que nuestro modelo no esta "balanceado".<br>
+<b>(4)</b> Ahora supongamos el mejor escenario, donde conoces las restricciones del problema y el equipo de logística claramente sabe lo que necesita.
+Por ejemplo, teniendo en cuenta lo anterior, que son seis zonas, ahora sabemos que nuestro objetivo es minimizar la distancia recorrida en las entregas. 
+Pero también sabemos que el número de paradas que hay que realizar debe ser el mismo entre cada una de la zonas (no necesariamente el mismo pero debe de estar balanceado).
+Además que los items a entregar deben estar balanceados también. 
+Ahora se pone más interesante y es justo el problema que fue planteado en el reto.
+</p>
+
+<p>
+<h4>Conclusiones</h4>
+La idea de entregas incrementales e iteraciones que algunas metodologías de desarrollo presentan son muy buenas para ciertas cosas, pero no para encontrar el problema o para delimitar el mismo.
+Sobre todo teniendo en cuenta que no debemos de reinventar la rueda o cambiar todos los procesos que existen en la empresa, lo cual no dice que no sean cuestionados pero que sean conocidos.
+Debemos de buscar estar en el punto 4 desde un inicio e inclusive en este punto que presento como último, siguen existiendo muchas incognitas.
+Por ejemplo, si la distancia a minimizar es la distancia entre cada una de las tiendas al trazar la ruta o la distancia entre el centroide y cada una de las tiendas o qué metrica de distancia se habrá de usar.
+Las organizaciones con más desarrollo en datos son aquellas donde datos existe como una área funcional, que tiene voz y voto con el eslabón más alto de la jerarquía. 
+Y esto tiene como concecuencia que las áreas no siempre esten bien comunicadas.
+Sin embargo, una de las actividades que más puede enganchar a los colaboradores es descubrir que problemas existen e intentar resolverlos, es por ello que recomiendo que se tenga un marco de trabajo para abordar dichos problemas.
+</p>
+</div>
+{% endblock %}
