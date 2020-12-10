@@ -42,12 +42,12 @@ def download_inegi(content_type, token):
     """
     data_dictionary = {}
     #there might be an easier way to extract all states info
-    if content_type == "gender":
+    if content_type == "population":
         for state in range(1, 33):
             if state < 10:
-                url = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000002,1002000003/es/0700000{}/true/BISE/2.0/" + token + "?type=json".format(str(state))
+                url = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000002,1002000003/es/0700000{state}/true/BISE/2.0/".format(state = str(state)) + token + "?type=json"
             else:
-                url = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000002,1002000003/es/070000{}/true/BISE/2.0/" + token + "?type=json".format(str(state))
+                url = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000002,1002000003/es/070000{state}/true/BISE/2.0/".format(state = str(state)) + token + "?type=json"
             response = requests.get(url)
             json_response = response.json()
             males = int(float(json_response['Series'][0]['OBSERVATIONS'][0]['OBS_VALUE']))
@@ -55,10 +55,13 @@ def download_inegi(content_type, token):
             total = males + females
             per_males = males / total
             per_females = females / total
-            data_dictionary[inegi_state[state-1]] = [males, females, per_males, per_females]
-    df = pd.DataFrame.from_dict(data_dictionary, orient='index', columns = ["male", "female", "per_males", "per_females"])
+            inegi_state[14] = "Estado de México"
+            data_dictionary[inegi_state[state-1]] = [males, females, total, per_males, per_females]
+    df = pd.DataFrame.from_dict(data_dictionary, orient='index', columns = ["male", "female", "total", "per_males", "per_females"])
+    df.sort_index(inplace=True)
     df.reset_index(inplace=True)
     df = df.rename(columns = {'index':'states'})
+    df.replace("México", "Estado de México")
     df.to_csv(content_type + ".csv", index = False)
 
 def append_csv(to_append, path_to_write):
@@ -80,22 +83,49 @@ def plot_trends():
     return(region_plot)
 
 def plot_inegi(content_type):
-    df = pd.read_csv(content_type + ".csv")
+    pos = content_type.find("-")
+    path = content_type[:pos]
+    content_type = content_type[pos+1:]
+    df = pd.read_csv(path + ".csv")
     states = df.states.to_list()
     if content_type == "gender":
         males = df.male.to_list()
         females = df.female.to_list()
-        layout_gender = dict(title=dict(text = "Total female and male by state",
+        per_males = df.per_males.to_list()
+        per_females = df.per_females.to_list()
+        bar_gender_male = go.Bar(name = "Hombres", x = states, y = males, marker = {"color":'#0a1845'})
+        bar_gender_female = go.Bar(name = "Mujeres", x = states, y = females, marker = {"color": "#FFB6C1"})
+        bar_gender_male_per = go.Bar(name = "% Hombres", x = states, y = per_males, marker = {"color":'#0a1845'}, visible = False)
+        bar_gender_female_per = go.Bar(name = "% Mujeres", x = states, y = per_females, marker = {"color": "#FFB6C1"}, visible= False)
+        data = [bar_gender_male, bar_gender_female, bar_gender_male_per, bar_gender_female_per]
+        updatemenus = list([
+                            dict(active=0,
+                                showactive = True,
+                                buttons=list([   
+                                            dict(label = "Total",
+                                                method = "update",
+                                                args = [{"visible": [True, True, False, False]}]),
+                                            dict(label = "Porcentage",
+                                                method = "update",
+                                                args = [{"visible": [False, False, True, True]}])]))])
+        layout_gender = dict(title=dict(text = "Female and male by state",
                                         font=dict(size = 20, color = '#0a1845')),
                             title_x=0.5,
                             barmode = "group",
                             plot_bgcolor='rgba(0,0,0,0)',
                             xaxis = dict(title= "State",),
-                            yaxis = dict(title = "Total Population", showgrid=True, gridcolor='#ececec'),)
-        bar_gender = go.Figure(data=[go.Bar(name = "Hombres", x = states, y = males, marker = {"color":'#0a1845'}), 
-                                     go.Bar(name = "Mujeres", x = states, y = females, marker = {"color": "#FFB6C1"})], 
-                                     layout = layout_gender)
-        final_plot = [dict(data=bar_gender)]
+                            yaxis = dict(title = "Population", showgrid=True, gridcolor='#ececec'),
+                            updatemenus=updatemenus,)
+        final_plot = [dict(data=data, layout = layout_gender)]
+    elif content_type == "relative":
+        total = df.total.sum()
+        values = df.total / total
+        bar_relative = [go.Bar(x=states, y = values, marker_color='rgb(50, 91, 121)')]
+        layout_relative = dict(title=dict(text='Población por estado',
+                                    font=dict(size=20,color='#0a1845')),
+                         xaxis = dict(title = 'State',),
+                         yaxis = dict(title = 'Población relativa'),)
+        final_plot = [dict(data=bar_relative, layout=layout_relative)]
     return(final_plot)
 
 def main():
@@ -104,12 +134,14 @@ def main():
     if ((date.today() - last_modification_region).days > 7) or ((date.today() - last_modification_historical).days > 7):
         download_trends()
         plot_trend = plot_trends()[0]
-        _plot_inegi = plot_inegi("gender")[0]
-        return([plot_trend, _plot_inegi])
+        plot_population = plot_inegi("population-relative")[0]
+        _plot_gender = plot_inegi("population-gender")[0]
+        return([plot_trend, plot_population, _plot_gender])
     else:
         plot_trend = plot_trends()[0]
-        _plot_inegi = plot_inegi("gender")[0]
-        return([plot_trend, _plot_inegi])
+        plot_population = plot_inegi("population-relative")[0]
+        _plot_gender = plot_inegi("population-gender")[0]
+        return([plot_trend, plot_population, _plot_gender])
 
 
 if __name__ == "__main__":
