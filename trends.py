@@ -5,7 +5,6 @@ import plotly.graph_objs as go
 from datetime import datetime, time, date, timedelta
 import csv
 import requests
-import config
 
 #https://www.inegi.org.mx/servicios/api_indicadores.html#introduccion
 inegi_state = ["Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Coahuila", 
