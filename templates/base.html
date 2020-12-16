@@ -12,7 +12,7 @@
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0a1845;">
-			<a class="navbar-brand" href="#" style="width: 125px; font-family: Comic Sans MS, cursive, sans-serif; font-size:175%;"><b>OpenHR</b></a>
+			<a class="navbar-brand" href="{{ url_for('home') }}" style="width: 125px; font-family: Comic Sans MS, cursive, sans-serif; font-size:175%;"><b>OpenHR</b></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -27,14 +27,14 @@
       					<li class="nav-item dropdown">
         					<a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 80px; font-size:120%; font-family: Comic Sans MS, cursive, sans-serif;">Products</a>
         		<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          			<a class="dropdown-item" href="#">Action</a>
+          			<a class="dropdown-item" href="{{ url_for('plot') }}">Google trends</a>
           			<a class="dropdown-item" href="#">Another action</a>
           			<div class="dropdown-divider"></div>
           				<a class="dropdown-item" href="#">Something else here</a>
         		</div>
       					</li>
     			</ul>
-     			<a class="navbar-brand" href="https://github.com/mauriciomani"><img src="{{ url_for('static',filename='github.png') }}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy"></a>
+     			<a class="navbar-brand" href="https://github.com/mauriciomani/OpenHR"><img src="{{ url_for('static',filename='github.png') }}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy"></a>
 			<a class="navbar-brand" href="https://mx.linkedin.com/public-profile/in/josemauriciomani"><img src="{{ url_for('static',filename='linkedin.png') }}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy"></a>
 		</nav>
 		{% block content %}

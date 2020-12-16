@@ -16,26 +16,26 @@ inegi_state = ["Aguascalientes", "Baja California", "Baja California Sur", "Camp
                "Zacatecas"]
 
 #https://github.com/GeneralMills/pytrends
-def download_trends():
+def download_trends(content_type):
     #from mexico
     pytrends = TrendReq(hl='es-MX', tz=360)
     kw_list = ["bolsa de trabajo"]
-    #last seven days
-    pytrends.build_payload(kw_list, timeframe='now 7-d', geo='MX', gprop='')
-    #this returns pandas dataframe
-    historical = pytrends.interest_over_time()
-    #which state is searching more 
-    regions = pytrends.interest_by_region(resolution='REGION', inc_low_vol=True, inc_geo_code=False)
-    #since historical has data we are not interested in
-    bolsa_trabajo_value = historical.iloc[:, :-1].mean()[0]
-    regions.reset_index(inplace=True)
-    region_list = regions.to_numpy()
-    for region in region_list:
-        append_csv([str(date.today())] + list(region), "region.csv")
-    append_csv([str(date.today())] + [bolsa_trabajo_value],"historical.csv")
-    #We are appending csv data not writting again
-    #historical.iloc[:, :-1].to_csv("historical.csv")
-    #region.to_csv("region.csv", columns = ["geoname", "bolsa_de_trabajo"])
+    if content_type == "historical":
+        #last seven days
+        pytrends.build_payload(kw_list, timeframe='now 7-d', geo='MX', gprop='')
+        #this returns pandas dataframe
+        historical = pytrends.interest_over_time()
+        bolsa_trabajo_value = int(historical.resample("W").mean()[0])
+        append_csv([str(date.today())] + [bolsa_trabajo_value],"historical.csv")
+    elif content_type == "region":
+        #which state is searching more 
+        regions = pytrends.interest_by_region(resolution='REGION', inc_low_vol=True, inc_geo_code=False)
+        regions.reset_index(inplace=True)
+        region_list = regions.to_numpy()
+        for region in region_list:
+            append_csv([str(date.today())] + list(region), "region.csv")
+            #We are appending csv data not writting again
+
 
 def download_inegi(content_type, token):
     """
@@ -70,18 +70,30 @@ def append_csv(to_append, path_to_write):
         writer = csv.writer(f)
         writer.writerow(to_append)
 
-def plot_trends():
-    region = pd.read_csv("region.csv")
-    region_last = region[region.date >= region.date.max()]
-    states = region_last.geoname.tolist()
-    values = region_last.bolsa_de_trabajo.tolist()
-    bar_region = [go.Bar(x=states, y = values, marker_color='rgb(10, 24, 69)')]
-    layout_region = dict(title=dict(text='"Bolsa de Trabajo" by state in Mexico',
-                                    font=dict(size=20,color='#0a1845')),
-                         xaxis = dict(title = 'State',),
-                         yaxis = dict(title = 'Search value'),)
-    region_plot = [dict(data=bar_region, layout=layout_region)]
-    return(region_plot)
+def plot_trends(content_type):
+    if content_type == "region":
+        region = pd.read_csv("region.csv")
+        region_last = region[region.date >= region.date.max()]
+        states = region_last.geoname.tolist()
+        values = region_last.bolsa_de_trabajo.tolist()
+        bar_region = [go.Bar(x=states, y = values, marker_color='rgb(10, 24, 69)')]
+        layout_region = dict(title=dict(text='"Bolsa de Trabajo" by state in Mexico',
+                                        font=dict(size=20,color='#0a1845')),
+                             xaxis = dict(title = 'State',),
+                             yaxis = dict(title = 'Search value'),)
+        region_plot = [dict(data=bar_region, layout=layout_region)]
+        return(region_plot)
+    elif content_type == "historical":
+        historical = pd.read_csv("historical.csv")
+        dates = historical.date.tolist()
+        values = historical["bolsa de trabajo"].tolist()
+        over_time = [go.Scatter(x=dates, y = values, marker_color='rgb(10, 24, 69)')]
+        layout_historical = dict(title=dict(text='"Bolsa de Trabajo" over time',
+                                        font=dict(size=20,color='#0a1845')),
+                             xaxis = dict(title = 'Dates',),
+                             yaxis = dict(title = 'Search value'),)
+        historical_plot = [dict(data=over_time, layout=layout_historical)]
+        return(historical_plot)
 
 def plot_inegi(content_type):
     pos = content_type.find("-")
@@ -132,18 +144,21 @@ def plot_inegi(content_type):
 def main():
     last_modification_region = datetime.fromtimestamp(os.path.getmtime("region.csv")).date()
     last_modification_historical = datetime.fromtimestamp(os.path.getmtime("historical.csv")).date()
-    if ((date.today() - last_modification_region).days > 7) or ((date.today() - last_modification_historical).days > 7):
-        download_trends()
-        plot_trend = plot_trends()[0]
-        plot_population = plot_inegi("population-relative")[0]
-        _plot_gender = plot_inegi("population-gender")[0]
-        return([plot_trend, plot_population, _plot_gender])
+    if (date.today() - last_modification_region).days > 7:
+        download_trends(content_type="region")
+    if  ((date.today() - last_modification_historical).days > 7) and (date.today().weekday() == 6):
+        download_trends(content_type="historial")
+    if  ((date.today() - last_modification_historical).days < 7) and (date.today().weekday() == 6):
+        download_trends(content_type="historial")
+    if  ((date.today() - last_modification_historical).days > 7) and (date.today().weekday() != 6):
+        print("Please add necessary week")
     else:
-        plot_trend = plot_trends()[0]
-        plot_population = plot_inegi("population-relative")[0]
-        _plot_gender = plot_inegi("population-gender")[0]
-        return([plot_trend, plot_population, _plot_gender])
-
+        pass
+    plot_region = plot_trends(content_type="region")[0]
+    plot_population = plot_inegi("population-relative")[0]
+    _plot_gender = plot_inegi("population-gender")[0]
+    plot_historical = plot_trends(content_type="historical")[0]
+    return([plot_historical, plot_region, plot_population, _plot_gender])
 
 if __name__ == "__main__":
     main()
