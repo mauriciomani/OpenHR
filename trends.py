@@ -1,5 +1,4 @@
 import os
-from pytrends.request import TrendReq
 import pandas as pd
 import plotly.graph_objs as go
 from datetime import datetime, time, date, timedelta
@@ -19,100 +18,6 @@ inegi_state = ["Aguascalientes", "Baja California", "Baja California Sur", "Camp
 aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
 aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY_ID']
 s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
-
-#https://github.com/GeneralMills/pytrends
-def download_trends(content_type):
-    #from mexico
-    pytrends = TrendReq(hl='es-MX', tz=360)
-    kw_list = ["bolsa de trabajo"]
-    pytrends.build_payload(kw_list, timeframe='now 7-d', geo='MX', gprop='')
-    if content_type == "historical":
-        #this returns pandas dataframe
-        historical = pytrends.interest_over_time()
-        bolsa_trabajo_value = historical.resample("W").mean()
-        append_csv([str(date.today())] + [bolsa_trabajo_value],"historical.csv")
-    elif content_type == "region":
-        #which state is searching more 
-        regions = pytrends.interest_by_region(resolution='REGION', inc_low_vol=True, inc_geo_code=False)
-        regions.reset_index(inplace=True)
-        region_list = regions.to_numpy()
-        for region in region_list:
-            append_csv([str(date.today())] + list(region), "region.csv")
-            #We are appending csv data not writting again
-
-
-def download_inegi(content_type, token):
-    """
-    Process data from INEGI API
-    """
-    #there might be an easier way to extract all states info
-    if content_type == "population":
-        data_dictionary = {}
-        for state in range(1, 33):
-            #you can make it all in one, like age example
-            if state < 10:
-                url_gender = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000002,1002000003/es/0700000{state}/true/BISE/2.0/".format(state = str(state)) + token + "?type=json"
-                url_age = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000070,1002000073,1002000076,1002000079,1002000082,1002000085,1002000091,1002000094,1002000097,1002000100/es/0700000{state}/true/BISE/2.0/".format(state = str(state)) + token + "?type=json"
-            else:
-                url_gender = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000002,1002000003/es/070000{state}/true/BISE/2.0/".format(state = str(state)) + token + "?type=json"
-                url_age = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/1002000070,1002000073,1002000076,1002000079,1002000082,1002000085,1002000091,1002000094,1002000097,1002000100/es/070000{state}/true/BISE/2.0/".format(state = str(state)) + token + "?type=json"
-            #creatimg a function might reduce code
-            response_gender = requests.get(url_gender)
-            response_age = requests.get(url_age)
-            json_response_gender = response_gender.json()
-            json_response_age = response_age.json()["Series"]
-            males = int(float(json_response_gender['Series'][0]['OBSERVATIONS'][0]['OBS_VALUE']))
-            females = int(float(json_response_gender['Series'][1]['OBSERVATIONS'][0]['OBS_VALUE']))
-            total = males + females
-            per_males = males / total
-            per_females = females / total
-            value = [males, females, total, per_males, per_females]
-            for ages in range(10):
-                if ages % 2==0:
-                    age1 = int(float(json_response_age[ages]['OBSERVATIONS'][0]['OBS_VALUE']))
-                    age2 = int(float(json_response_age[ages + 1]['OBSERVATIONS'][0]['OBS_VALUE']))
-                    value.append(age1 + age2)
-                    value.append((age1 + age2)/total)
-            inegi_state[14] = "Estado de México"
-            data_dictionary[inegi_state[state-1]] = value
-        df = pd.DataFrame.from_dict(data_dictionary, orient='index', columns = ["male", "female", "total", "per_males", "per_females", "twenties", "per_twenties", "thirties", "per_thirties", "fourties", "per_fourties", "fifties", "per_fifties", "sixties", "per_sixties"])
-        df.sort_index(inplace=True)
-        df.reset_index(inplace=True)
-        df = df.rename(columns = {'index':'states'})
-        df.replace("México", "Estado de México")
-    
-    if content_type == "employment":
-        employment = {}
-        #tasa desocupacion desestacionalizada
-        url_unemployment_rate = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/444884/es/0700/false/BIE/2.0/" + token + "?type=json"
-        response_unemployment_rate = requests.get(url_unemployment_rate)
-        json_response_unemployment_rate = response_unemployment_rate.json()["Series"][0]["OBSERVATIONS"]
-        for observation in json_response_unemployment_rate:
-            employment[observation["TIME_PERIOD"]] = [float(observation["OBS_VALUE"])/100]
-        #I am separating it since I got problems when joinning
-        #tasa desocupacion
-        url_unemployment = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/444603/es/0700/false/BIE/2.0/" + token + "?type=json"
-        response_unemployment = requests.get(url_unemployment)
-        json_response_unemployment = response_unemployment.json()["Series"][0]["OBSERVATIONS"]
-        for observation in json_response_unemployment:
-            employment[observation["TIME_PERIOD"]].append(float(observation["OBS_VALUE"])/100)
-        #Tasa de subocupacion desestacionalizada
-        url_subemployment_rate = "https://www.inegi.org.mx/app/api/indicadores/desarrolladores/jsonxml/INDICATOR/444889/es/0700/false/BIE/2.0/" + token + "?type=json"
-        response_subemployment_rate = requests.get(url_subemployment_rate)
-        json_response_subemployment_rate = response_subemployment_rate.json()["Series"][0]["OBSERVATIONS"]
-        for observation in json_response_subemployment_rate:
-            employment[observation["TIME_PERIOD"]].append(float(observation["OBS_VALUE"])/100)
-        df = pd.DataFrame.from_dict(employment, orient = "index", columns = ["unemployment_rate", "unemployment_rate_seas", "subemployment_rate"])
-        df.reset_index(inplace = True)
-        df = df.rename(columns = {'index':'time'})
-        df["time"] = pd.to_datetime(df.time)
-        
-    df.to_csv(content_type + ".csv", index = False)
-
-def append_csv(to_append, path_to_write):
-    with open(path_to_write, 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(to_append)
 
 def plot_trends(content_type):
     if content_type == "region":
