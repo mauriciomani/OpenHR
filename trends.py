@@ -5,6 +5,8 @@ import plotly.graph_objs as go
 from datetime import datetime, time, date, timedelta
 import csv
 import requests
+from io import StringIO
+import boto3
 
 #https://www.inegi.org.mx/servicios/api_indicadores.html#introduccion
 inegi_state = ["Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Coahuila", 
@@ -13,6 +15,10 @@ inegi_state = ["Aguascalientes", "Baja California", "Baja California Sur", "Camp
                "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", 
                "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", 
                "Zacatecas"]
+
+aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
+aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY_ID']
+s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 
 #https://github.com/GeneralMills/pytrends
 def download_trends(content_type):
@@ -110,7 +116,11 @@ def append_csv(to_append, path_to_write):
 
 def plot_trends(content_type):
     if content_type == "region":
-        region = pd.read_csv("region.csv")
+        #very important to include the parameters: Bucket and Key
+        csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = "region.csv")
+        body = csv_obj['Body']
+        csv_string = body.read().decode('utf-8')
+        region = pd.read_csv(StringIO(csv_string))
         region_last = region[region.date >= region.date.max()]
         states = region_last.geoname.tolist()
         values = region_last.bolsa_de_trabajo.tolist()
@@ -122,7 +132,11 @@ def plot_trends(content_type):
         region_plot = [dict(data=bar_region, layout=layout_region)]
         return(region_plot)
     elif content_type == "historical":
-        historical = pd.read_csv("historical.csv")
+        csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = "historical.csv")
+        body = csv_obj['Body']
+        csv_string = body.read().decode('utf-8')
+        historical = pd.read_csv(StringIO(csv_string))
+        #historical = pd.read_csv("historical.csv")
         dates = historical.date.tolist()
         values = historical["bolsa de trabajo"].tolist()
         over_time = [go.Scatter(x=dates, y = values, marker_color='rgb(10, 24, 69)')]
@@ -137,7 +151,11 @@ def plot_inegi(content_type):
     pos = content_type.find("-")
     path = content_type[:pos]
     content_type = content_type[pos+1:]
-    df = pd.read_csv(path + ".csv")
+    csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = path + ".csv")
+    body = csv_obj['Body']
+    csv_string = body.read().decode('utf-8')
+    df = pd.read_csv(StringIO(csv_string))
+    #df = pd.read_csv(path + ".csv")
     if content_type == "gender":
         states = df.states.to_list()
         males = df.male.to_list()
@@ -259,7 +277,11 @@ def plot_inegi(content_type):
             height=600)
     
     elif content_type == "unemployment_rate":
-        historical = pd.read_csv("historical.csv")
+        csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = "historical.csv")
+        body = csv_obj['Body']
+        csv_string = body.read().decode('utf-8')
+        historical = pd.read_csv(StringIO(csv_string))
+        #historical = pd.read_csv("historical.csv")
         min_date = historical.date.min()
         df = df[df.time >= min_date]
         dates = df.time.tolist()
@@ -274,18 +296,6 @@ def plot_inegi(content_type):
     return(final_plot)
 
 def main():
-    last_modification_region = datetime.fromtimestamp(os.path.getmtime("region.csv")).date()
-    last_modification_historical = datetime.fromtimestamp(os.path.getmtime("historical.csv")).date()
-    if (date.today() - last_modification_region).days > 7:
-        download_trends(content_type="region")
-    if  ((date.today() - last_modification_historical).days > 7) and (date.today().weekday() == 6):
-        download_trends(content_type="historial")
-    if  ((date.today() - last_modification_historical).days < 7) and (date.today().weekday() == 6):
-        download_trends(content_type="historial")
-    if  ((date.today() - last_modification_historical).days > 7) and (date.today().weekday() != 6):
-        print("Please add necessary week")
-    else:
-        pass
     plot_region = plot_trends(content_type="region")[0]
     plot_population = plot_inegi("population-relative")[0]
     _plot_gender = plot_inegi("population-gender")[0]
