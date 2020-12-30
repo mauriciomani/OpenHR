@@ -1,3 +1,7 @@
 webpage_env
 __pycache__
 config.py
+open-hr-data-pipeline.csv
+test.ipynb
+.ipynb_checkpoints
+aws/google_trends/sample_data
