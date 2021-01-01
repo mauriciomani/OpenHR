@@ -17,6 +17,9 @@ inegi_state = ["Aguascalientes", "Baja California", "Baja California Sur", "Camp
 
 aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
 aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY_ID']
+#for local test please uncomment the following lines
+#aws_access_key_id = ""
+#aws_secret_access_key = ""
 s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 
 def plot_trends(content_type):

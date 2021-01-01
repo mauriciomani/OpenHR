@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %} Blog {% endblock %}
+{% block content %}
+<main class="container">
+    <!--Please look at the spacing reference-->
+    <div class="p-4 p-md-5 mb-4 mt-3 rounded" style="background-color: #f8f4ee">
+        <div class="col-md-8 px-0">
+            <font color="#0a1845">
+                <h1 class="display-4">{{ blog_entries[-1]['name'] }}</h1>
+                <p class="lead my-3">{{ blog_entries[-1]['summary'] }}</p>
+                <p class="lead mb-0"><a href="{{ url_for(blog_entries[-1]['filepath']) }}" class="font-weight-bold text-secondary">Continuar leyendo...</a></p>
+            </font>
+        </div>
+    </div>
+
+    {% for blog in blog_entries %}
+    <div class="mb-4 card">
+        <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2" style ="color:#0a1845">{{blog['topic']}}</strong>
+            <h2 class="mb-0">{{blog['name']}}</h2>
+            <div class="mb-1 text-muted">{{blog['date']}}</div>
+                <p class="card-text mb-auto">{{blog['summary']}}</p>
+                <a href="{{ url_for(blog['filepath']) }}" class="stretched-link" style ="color:#0a1845" ></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %} 
+    
+</main>
+{% endblock %}

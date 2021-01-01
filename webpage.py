@@ -10,6 +10,7 @@ app = Flask(__name__)
 def home():
     return(render_template("index.html"))
 
+#think of changing name
 @app.route("/data")
 def plot():
     plot = main()
@@ -19,9 +20,16 @@ def plot():
                            ids=ids,
                            figuresJSON=figuresJSON)
                         
-@app.route("/lim_problem")
-def problem():
-    return(render_template("lim_problem.html"))
+@app.route("/blog")
+def blog():
+    with open('blog_info.json') as f:
+        blog_entries = json.load(f)
+    return(render_template("blog/blog_index.html", blog_entries = blog_entries))
+
+@app.route("/blog/lim_problem")
+def blog_lim_problem():
+    return(render_template("blog/lim_problem.html"))
+
 
 if __name__=="__main__":
     app.run(debug=False)

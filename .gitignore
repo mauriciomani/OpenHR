@@ -1,6 +1,6 @@
 webpage_env
 __pycache__
-config.py
+config
 open-hr-data-pipeline.csv
 test.ipynb
 .ipynb_checkpoints
