@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %} Limitación problema {% endblock %}
+{% block content %}
+<main class="container mt-5", style="color: #0a1845">
+    <h1 style="font-weight: bold">Scheduling problems and linear programming</h1>
+    <div class="py-4">
+        <h3>Simple scheduling problem</h3>
+        <p class="lead">Workers will be hired to labour for 8 continous hours, however we do not need same amount of employees durings all 8 continous hours. It can be smarter if we divide into 4 hours those 8 hour shifts. 
+            Now we can minimize the amount of workers on labour using linear programming. Each possible 8 hours shifts will be included in two 4 hours group.
+            Our only constraints are the number of workers required in each 4 hours groups. Those constraints can be defined below in the given form, and it will be solved using SIMPLEX method.
+            If facing same problem with different shift schedules, you can still use it.
+        </p>
+        <h3>Solving using Linear Programming</h3>
+        <p class="lead">Due to the fact that we can set the problem as a system of linear equations and inequalities and that we have a linear function to minimize (or maximize if necessary) we can use linear programming. 
+            This is a fundamental optimization technique. The basic method for solving LP problems is SIMPLEX. This simple scheduling problem is solved using scipy library (scientific computing Python), that can also be used for non-linear optimization.
+        </p>
+    </div>
+<form action="/working_schedule" method="get">
+    <div class="form-group row">
+        <label for="groupOne" class="col-sm-2 col-form-label">24:00-04:00 [Group 1]</label>
+        <div class="col-sm-4">
+            <input type="number" class="form-control" name="groupOne" placeholder="Num of workers">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="groupTwo" class="col-sm-2 col-form-label">04:00-08:00 [Group 2]</label>
+        <div class="col-sm-4">
+            <input type="number" class="form-control" name="groupTwo" placeholder="Num of workers">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="groupThree" class="col-sm-2 col-form-label">08:00-12:00 [Group 3]</label>
+        <div class="col-sm-4">
+            <input type="number" class="form-control" name="groupThree" placeholder="Num of workers">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="groupFour" class="col-sm-2 col-form-label">12:00-16:00 [Group 4]</label>
+        <div class="col-sm-4">
+            <input type="number" class="form-control" name="groupFour" placeholder="Num of workers">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="groupFive" class="col-sm-2 col-form-label">16:00-20:00 [Group 5]</label>
+        <div class="col-sm-4">
+            <input type="number" class="form-control" name="groupFive" placeholder="Num of workers">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="groupSix" class="col-sm-2 col-form-label">20:00-24:00 [Group 6]</label>
+        <div class="col-sm-4">
+            <input type="number" class="form-control" name="groupSix" placeholder="Num of workers">
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary" style="background-color: #0a1845; border: none;">Sign in</button>
+        </div>
+    </div>
+  </form>
+
+</main>
+{% endblock %}

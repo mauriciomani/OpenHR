@@ -6,6 +6,10 @@ section {
 	border-sizing: border-box; 
 }
 
+body { 
+	padding-top: 68px; 
+}
+
 .container_home {
 	width: 100%;
 	padding-right: 15px;
