@@ -31,10 +31,6 @@ def blog():
 def blog_lim_problem():
     return(render_template("blog/lim_problem.html"))
 
-@app.route("/blog/sample")
-def blog_sample():
-    return(render_template("blog/blog_sample.html"))
-
 @app.route("/working_schedule", methods = ["GET"])
 def working_schedule():
     group_one = int(request.args.get('groupOne'))
