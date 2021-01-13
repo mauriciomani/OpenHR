@@ -25,7 +25,7 @@ Currently OpenHR is deployed in a Heroku free app under the **open-hrm** name an
 Most important file in the Flask app is the **webpage.py**, please make sure **debug is off**. Remember that in this file you can add your static and dynamic html files and all the necessary logic.<br>
 Please add all the files that are usefull on the repository but not on the deployed app under the **.slugignore** file (this is like a .gitignore but for Heroku). If you are adding any python dependency (library) kindly add it to the **requierements.txt** file.
 
-#### Not so important files
+### Not so important files
 **repo_images** is a folder that contains important images for the project but currently not for the deployed app. The **the-Great-Wave-off-Kanagawa.jpg** is the image that has been used as color palette, please feel free to come up with new color palettes. **LICENCE** and **Procfile**, the former keeps the information of the LICENSE for the current project, the latter is for productionize the application under Heroku. **aws/google_trends**, unless you plan to work under the unemployment rate and google trends application please ignore it; however, might be useful when adding AWS microservices.
 
 ## RoadMap

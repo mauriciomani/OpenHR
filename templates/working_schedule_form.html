@@ -1,3 +1,6 @@
+{% block libraries %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+{% endblock %}
 {% extends "base.html" %}
 {% block title %} Limitación problema {% endblock %}
 {% block content %}
@@ -15,7 +18,7 @@
             This is a fundamental optimization technique. The basic method for solving LP problems is SIMPLEX. This simple scheduling problem is solved using scipy library (scientific computing Python), that can also be used for non-linear optimization.
         </p>
     </div>
-<form action="/working_schedule" method="get">
+<form action="/simple_working_schedule" method="get">
     <div class="form-group row">
         <label for="groupOne" class="col-sm-2 col-form-label">24:00-04:00 [Group 1]</label>
         <div class="col-sm-4">
@@ -57,7 +60,180 @@
             <button type="submit" class="btn btn-primary" style="background-color: #0a1845; border: none;">Minimize</button>
         </div>
     </div>
-  </form>
+</form>
+    <div class="py-5">
+        <h3>Mixed Integer Linear Porgramming for Employee Optimization</h3>
+        <p class="lead">In this case we have even more data that will be incorporated, available hours and hourly salaries and as above a minimum number of staff needed at a particular hour.
+            Also we will minimize, instead of employees, wages. 
+        </p>
+        <h3>Solving using Linear Programming</h3>
+        <p class="lead">Due to the fact that we can set the problem as a system of linear equations and inequalities and that we have a linear function to minimize (or maximize if necessary) we can use linear programming. 
+            This is a fundamental optimization technique. The basic method for solving LP problems is SIMPLEX. This simple scheduling problem is solved using scipy library (scientific computing Python), that can also be used for non-linear optimization.
+        </p>
+    </div>
 
+    <form action="/milp_working_schedule" method="post">
+        <div class="form-row mb-3">
+            <label for="EmployeeOne" class="col-sm-1 col-form-label">Employee1</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours1" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours1" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage1" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability1" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <label for="groupOne" class="col-sm-1 col-form-label">Employee2</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours2" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours2" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage2" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability2" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <label for="groupOne" class="col-sm-1 col-form-label">Employee3</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours3" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours3" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage3" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability3" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <label for="groupOne" class="col-sm-1 col-form-label">Employee4</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours4" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours4" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage4" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability4" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <label for="groupOne" class="col-sm-1 col-form-label">Employee5</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours5" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours5" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage5" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability5" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <label for="groupOne" class="col-sm-1 col-form-label">Employee6</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours6" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours6" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage6" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability6" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <label for="groupOne" class="col-sm-1 col-form-label">Employee7</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours7" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours7" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage7" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability7" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-row mb-5">
+            <label for="groupOne" class="col-sm-1 col-form-label">Employee8</label>
+            <div class="col">
+                <input type="number" class="form-control" name="min-hours8" placeholder="Min Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name ="max-hours8" placeholder="Max Hours">
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="hourly-wage8" placeholder="Hourly Wage">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="availability8" placeholder="Availability">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary" style="background-color: #0a1845; border: none;">Minimize</button>
+            </div>
+        </div>
+    </form>
+    <!--https://www.youtube.com/watch?v=Lzj13QhRhzQ-->
+    <!--<form method="POST">
+        <div class="input-wrapper">
+            <label for="groupSix" class="col-sm-2 col-form-label">Employee</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="field[]" placeholder="Name" value=""/>
+                <a href="javascript:void(0);" class="add-input btn btn-primary" title="Add input">ADD</a>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary" style="background-color: #0a1845; border: none;">Minimize</button>
+            </div>
+        </div>
+    </form>-->
+    <!--Might be smarter to place inside a js file-->
+    <!--<script>
+        $(document).ready(function(){
+            var max_input_fields = 10;
+            var add_input = $('.add-input');
+            var input_wrapper = $('.input-wrapper');
+            var new_input = '<div><input type="number" name="field[]" value=""/><a href="javascript:void(0);" class="remove-input" title="Remove input">Remove</div>';
+            var add_input_count = 1; 
+            $(add_input).click(function(){
+                if(add_input_count < max_input_fields){
+                    add_input_count++; 
+                    $(input_wrapper).append(new_input); 
+                }
+            });
+            $(input_wrapper).on('click', '.remove-input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_input_count--;
+            });
+        });
+    </script>-->
 </main>
 {% endblock %}
