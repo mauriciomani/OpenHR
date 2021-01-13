@@ -5,7 +5,7 @@ OpenHR is a Python project to make interesting open-source products for people a
 
 ## Improvements
 Please visit the Projects section (OpenHR) to check for "to do" tasks or add more "to do". You can also open an "Issue" and link it to current Project. So we can all know what you are currently working on.<br>
-If working locally please **clone** the repository, however be aware there might be changes in the main branch, specially in the **webpage.py** file. You can also **fork** the repository. Always create a **new branch** for the apps you working on and kindly make a Pull Request we will be glad to approve. No project (app) will be rejected to be part of OpenHR web application, however we insist on working under the following practices:
+If working locally please **clone** the repository, however be aware there might be changes in the main branch, specially in the **webpage.py** file. You can also **fork** the repository. Always create a **new branch** for the apps you working on and kindly make a Pull Request we will be glad to approve. If need a guide on how to make PRs online or offline please visit this [link](documentation/creating_pr.md). No project (app) will be rejected to be part of OpenHR web application, however we insist on working under the following practices:
 * Modular code for reusability.
 * Comments, please add only necessary comments, unless your project is highly code oriented and you want to help others understand step by step.
 * Group you code, according to the logic of the mentioned.
