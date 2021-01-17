@@ -48,10 +48,10 @@ def plot_trends(content_type):
         dates = historical.date.tolist()
         values = historical["bolsa de trabajo"].tolist()
         over_time = [go.Scatter(x=dates, y = values, marker_color='rgb(10, 24, 69)')]
-        layout_historical = dict(title=dict(text='"Bolsa de Trabajo" over time',
+        layout_historical = dict(title=dict(text='"Bolsa de Trabajo" a través del tiempo',
                                         font=dict(size=20,color='#0a1845')),
-                             xaxis = dict(title = 'Dates',),
-                             yaxis = dict(title = 'Search value'),)
+                             xaxis = dict(title = 'Fechas',),
+                             yaxis = dict(title = 'Valor de la búsqueda'),)
         historical_plot = [dict(data=over_time, layout=layout_historical)]
         return(historical_plot)
 
