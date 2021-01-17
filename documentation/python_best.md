@@ -70,4 +70,4 @@ def any_function(self, any_arg=None):
 For more information, please visit [PEP 257](https://www.python.org/dev/peps/pep-0257/) or a [more comprehensive guide](https://realpython.com/documenting-python-code/)
 
 ### Using OpenHR for your repos exposition
-I highly recommend you use [cookiecutter](https://github.com/cookiecutter/cookiecutter) to make sure your python project has all the necessary files.
+I highly recommend you use [cookiecutter](https://github.com/cookiecutter/cookiecutter) to make sure your python project has all the necessary files, it has a 12 factor philosophy. Also use lint-like tools to perform static analysis on the quality of your code. You can use [Flake8](https://flake8.pycqa.org/en/latest/) to test your code against PEP8. If follow PEP 257 you can use [Sphinx](https://www.sphinx-doc.org/en/master/usage/quickstart.html) to **auto-generate** documentation.
