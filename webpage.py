@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
-from trends import main
+#from trends import plot
 import json
 import plotly
 import lp
@@ -14,7 +14,8 @@ def home():
 #think of changing name
 @app.route("/data")
 def plot():
-    plot = main()
+    from trends import plot
+    plot = plot()
     ids = ['figure-{}'.format(i) for i, _ in enumerate(plot)]
     figuresJSON = json.dumps(plot, cls=plotly.utils.PlotlyJSONEncoder)
     return render_template('data.html',
@@ -34,6 +35,10 @@ def blog():
 @app.route("/blog/lim_problem")
 def blog_lim_problem():
     return(render_template("blog/lim_problem.html"))
+
+@app.route("/blog/google_trends")
+def unemployment_google():
+    return(render_template("blog/google_trends.html"))
 
 @app.route("/working_schedule_form")
 def working_schedule_form():
@@ -78,4 +83,4 @@ def milp_working_schedule():
     return(render_template("lp_milp_solution.html"))
 
 if __name__=="__main__":
-    app.run(debug=False)
+    app.run(debug = False)

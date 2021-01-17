@@ -21,7 +21,7 @@ If working locally please **clone** the repository, however be aware there might
 Remember we are trying to work with **best practices** if any file does not follow best practices please open an Issue or a PR and will be happy to open debate. On more information on the conventions that sould be follow please visit [python best](documentation/python_best.md)
 
 ## How to start working
-This is the simple guide, clone the code, you can use ssh: `git clone git@github.com:mauriciomani/OpenHR.git` or just download the zip file. It is **highly important that you comment the following lines under the trends.py file before running the webpage.py**: `aws_access_key_id` and `aws_secret_access_key` since you do not have them (if need access to AWS please contact us) and uncomment the same variables with the empty string: ***""**. Please avoid `git add .`, since you will be adding the commented trends.py file, instead use `git add name_of_file`. Install all the requierements libraries under the **requierements.txt** file, you can use `pip install -r requirements.txt` or check the needed libraries (if using Anaconda you might still need to install Flask). Once done that you are ready to type on the command line: `python webpage.py`. This will allow you to make local tests on you computer, you can also **change debug to True** as long as you **remeber to change it to False again** when commiting.
+This is the simple guide, clone the code, you can use ssh: `git clone git@github.com:mauriciomani/OpenHR.git` or just download the zip file. It is **highly important that you understand that trends.py file is not useful since you need AWS access**: `aws_access_key_id` and `aws_secret_access_key` (if need access to AWS please contact us), so do not worry if get an error when trying to access `/data` route. Please avoid `git add .`, instead use `git add name_of_file`. Install all the requierements libraries under the **requierements.txt** file, you can use `pip install -r requirements.txt` or check the needed libraries (if using Anaconda you might still need to install Flask). Once done that you are ready to type on the command line: `python webpage.py`. This will allow you to make local tests on you computer, you can also **change debug to True** as long as you **remeber to change it to False again** when commiting.
 
 ## OpenHR structure
 Currently OpenHR is deployed in a Heroku free app under the **open-hrm** name and automatic deployments have not been enabled. The web page application is built using Python's [Flask](https://flask.palletsprojects.com/en/1.1.x/) library, however, we are aware might be needed to migrate to [Django](https://www.djangoproject.com/). Some of the data pipelines are being managed by AWS, if need access please contact us. We use [Bootstrap](https://getbootstrap.com/) in our **front-end**. The files and folder organization follows the Flask conventions (practically identically to Django). **static** and **templates** folder include images, css files and html files respectively. Under templates file you can find **base.html** that is the main template for all the views, please make sure you are using it with [Jinja](https://jinja.palletsprojects.com/en/2.11.x/) templating language.<br>
@@ -40,7 +40,7 @@ Please add all the files that are usefull on the repository but not on the deplo
 * Improve google trends and unemployment rates forecast.
 * Deploy application in any IaaS.
 
-## Useful information
+## Useful information to getting started with OpenHR
 * [Github guides](https://guides.github.com/activities/hello-world/)
 * [Version control with Git](https://www.udacity.com/course/version-control-with-git--ud123)
 * [Jose Portilla Django Udemy bootcamp](https://www.udemy.com/course/python-and-django-full-stack-web-developer-bootcamp/)
@@ -48,6 +48,7 @@ Please add all the files that are usefull on the repository but not on the deplo
 * [Tech with Tim Flask tutorial](https://www.youtube.com/watch?v=mqhxxeeTbu0)
 * [Data Enginner Udacity Nanodegree](https://www.udacity.com/course/data-engineer-nanodegree--nd027)
 * [Machine Learning Enginner](https://www.udacity.com/course/machine-learning-engineer-nanodegree--nd009t) Useful for coding best practices.
+* [For more resources on basic Python and Data Science find OpenHR guide](documentation/learning_resources.md)
 * Contact us for help using the communication channel, we will be glad to explain everything needed.
 
 ## Communication

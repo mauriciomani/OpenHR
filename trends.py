@@ -203,7 +203,7 @@ def plot_inegi(content_type):
     
     return(final_plot)
 
-def main():
+def plot():
     plot_region = plot_trends(content_type="region")[0]
     plot_population = plot_inegi("population-relative")[0]
     _plot_gender = plot_inegi("population-gender")[0]
@@ -213,7 +213,8 @@ def main():
     plot_unemployment = plot_inegi(content_type="employment-unemployment_rate")[0]
     return([plot_historical, plot_unemployment, plot_region, plot_population, _plot_age, _plot_age_relative, _plot_gender])
 
-if __name__ == "__main__":
-    main()
+#No reason to have this implemented
+#if __name__ == "__main__":
+#    main()
 
 
