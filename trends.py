@@ -6,6 +6,7 @@ import csv
 import requests
 from io import StringIO
 import boto3
+import pdb
 
 #https://www.inegi.org.mx/servicios/api_indicadores.html#introduccion
 inegi_state = ["Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Coahuila", 
@@ -22,13 +23,9 @@ aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY_ID']
 #aws_secret_access_key = ""
 s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 
-def plot_trends(content_type):
+def plot_trends(content_type, region, historical):
     if content_type == "region":
         #very important to include the parameters: Bucket and Key
-        csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = "region.csv")
-        body = csv_obj['Body']
-        csv_string = body.read().decode('utf-8')
-        region = pd.read_csv(StringIO(csv_string))
         region_last = region[region.date >= region.date.max()]
         states = region_last.geoname.tolist()
         values = region_last.bolsa_de_trabajo.tolist()
@@ -40,10 +37,6 @@ def plot_trends(content_type):
         region_plot = [dict(data=bar_region, layout=layout_region)]
         return(region_plot)
     elif content_type == "historical":
-        csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = "historical.csv")
-        body = csv_obj['Body']
-        csv_string = body.read().decode('utf-8')
-        historical = pd.read_csv(StringIO(csv_string))
         #historical = pd.read_csv("historical.csv")
         dates = historical.date.tolist()
         values = historical["bolsa de trabajo"].tolist()
@@ -55,14 +48,14 @@ def plot_trends(content_type):
         historical_plot = [dict(data=over_time, layout=layout_historical)]
         return(historical_plot)
 
-def plot_inegi(content_type):
+def plot_inegi(content_type, df, employment, historical = None):
     pos = content_type.find("-")
-    path = content_type[:pos]
+    #path = content_type[:pos]
     content_type = content_type[pos+1:]
-    csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = path + ".csv")
-    body = csv_obj['Body']
-    csv_string = body.read().decode('utf-8')
-    df = pd.read_csv(StringIO(csv_string))
+    #csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = path + ".csv")
+    #body = population_object['Body']
+    #csv_string = body.read().decode('utf-8')
+    #df = pd.read_csv(StringIO(csv_string))
     #df = pd.read_csv(path + ".csv")
     if content_type == "gender":
         states = df.states.to_list()
@@ -185,33 +178,69 @@ def plot_inegi(content_type):
             height=600)
     
     elif content_type == "unemployment_rate":
-        csv_obj = s3.get_object(Bucket="open-hr-google-trends", Key = "historical.csv")
-        body = csv_obj['Body']
-        csv_string = body.read().decode('utf-8')
-        historical = pd.read_csv(StringIO(csv_string))
         #historical = pd.read_csv("historical.csv")
         min_date = historical.date.min()
-        df = df[df.time >= min_date]
-        dates = df.time.tolist()
-        values = df["unemployment_rate"].tolist()
+        employment = employment[employment.time >= min_date]
+        dates = employment.time.tolist()
+        values = employment["unemployment_rate"].tolist()
         over_time = [go.Scatter(x=dates, y = values, marker_color='rgb(50, 91, 121)')]
         layout_historical = dict(title=dict(text='Unemployment rate',
                                         font=dict(size=20,color='#0a1845')),
                              xaxis = dict(title = 'Dates',),
                              yaxis = dict(title = 'Unemployment rate'),)
         final_plot = [dict(data=over_time, layout=layout_historical)]
-    
+        
     return(final_plot)
 
+def create_dataframe(csv_object):
+    body = csv_object['Body']
+    csv_string = body.read().decode('utf-8')
+    df = pd.read_csv(StringIO(csv_string))
+    return(df)
+
+def prediction(historical, employment):
+    min_date = historical.date.min()
+    employment = employment[employment.time >= min_date]
+    historical = historical.set_index("date")
+    historical.index = pd.to_datetime(historical.index)
+    monthly_historical = historical.resample("M").mean()
+    monthly_historical.index = monthly_historical.index + pd.Timedelta(days=1)
+    prediction_bucket = monthly_historical.loc["2020-12-01":]
+    predicted_dates = prediction_bucket.index.tolist()
+    predicted_values_pre_covid = 0.0001 * prediction_bucket["bolsa de trabajo"] + 0.0272
+    predicted_values_covid = 0.0004 * prediction_bucket["bolsa de trabajo"] + 0.0262
+    dates = employment.time.tolist()
+    values = employment["unemployment_rate"].tolist()
+    final_plot = go.Figure()
+    final_plot.add_trace(go.Scatter(x=dates, y = values, marker_color='rgb(50, 91, 121)', name = "Unemployment rate"))
+    final_plot.add_trace(go.Scatter(x=predicted_dates, y = predicted_values_pre_covid, marker_color='rgb(165, 37, 9)', name = "Pre-covid predicción"))
+    final_plot.add_trace(go.Scatter(x=predicted_dates, y = predicted_values_covid, marker_color='rgb(19, 132, 9)', name = "Covid predicción"))
+    final_plot.update_layout(title = {'text' : "Predicción tasa de desempleo", "font":{"size":20, "color":'#0a1845'}, "x":0.5},
+                             plot_bgcolor='rgba(0,0,0,0)',
+                             xaxis = {"title": 'Dates'},
+                             yaxis = {"title": 'Unemployment rate', "showgrid":True, "gridcolor":'#ececec'},
+                             height = 600)
+    return(final_plot)
+
+
 def plot():
-    plot_region = plot_trends(content_type="region")[0]
-    plot_population = plot_inegi("population-relative")[0]
-    _plot_gender = plot_inegi("population-gender")[0]
-    plot_historical = plot_trends(content_type="historical")[0]
-    _plot_age = plot_inegi("population-age")
-    _plot_age_relative = plot_inegi("population-age_relative")
-    plot_unemployment = plot_inegi(content_type="employment-unemployment_rate")[0]
-    return([plot_historical, plot_unemployment, plot_region, plot_population, _plot_age, _plot_age_relative, _plot_gender])
+    region_object = s3.get_object(Bucket="open-hr-google-trends", Key = "region.csv")
+    region_csv = create_dataframe(region_object)
+    historical_object = s3.get_object(Bucket="open-hr-google-trends", Key = "historical.csv")
+    historical_csv = create_dataframe(historical_object)
+    population_object = s3.get_object(Bucket="open-hr-google-trends", Key = "population.csv")
+    population_csv = create_dataframe(population_object)
+    employment_object = s3.get_object(Bucket="open-hr-google-trends", Key = "employment.csv")
+    employment_csv = create_dataframe(employment_object)
+    plot_region = plot_trends("region", region_csv, historical_csv)[0]
+    plot_population = plot_inegi("population-relative", population_csv, employment_csv)[0]
+    _plot_gender = plot_inegi("population-gender", population_csv, employment_csv)[0]
+    plot_historical = plot_trends("historical", region_csv, historical_csv)[0]
+    _plot_age = plot_inegi("population-age", population_csv, employment_csv)
+    _plot_age_relative = plot_inegi("population-age_relative", population_csv, employment_csv)
+    plot_unemployment = plot_inegi("employment-unemployment_rate", population_csv, employment_csv, historical_csv)[0]
+    predicted = prediction(historical_csv, employment_csv)
+    return([plot_historical, plot_unemployment, plot_region, plot_population, _plot_age, _plot_age_relative, _plot_gender, predicted])
 
 #No reason to have this implemented
 #if __name__ == "__main__":

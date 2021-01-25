@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %} Unemployment Google {% endblock %}
+{% block content %}
+<main role="main" class="container">
+    <div class="row">
+      <div class="col-md-8 mt-4 blog-main">
+        <div class="blog-post">
+            <h2 class="blog-post-title">¿Podemos predecir la tasa de desempleo de las busquedas en google?</h2>
+            <p class="blog-post-meta">Enero 17, 2021 by Mauricio Mani <!--<a href="#">Mauricio Mani</a></p>-->
+            <hr>
+            <h2>Introducción</h2>
+            <p style="text-align: justify;">El presente ensayo encapsula el trabajo realizado para encontrar la tasa de desempleo de México utilizando 
+              únicamante las búsquedas de "bolsa de trabajo" en México y que puedes jugar con los datos en la siguiente 
+              <a href="{{ url_for('plot') }}">liga</a>, dónde además podrás profundizar en búsquedas por estado y proporción de
+              la población por edad y genero (creemos que se puede encontrar problemas discrimintatorios). 
+              Nos basaremos en el trabajo de Mankiw (1997) sobre inflación y desempleo. Pero, ¿por qué es tan importante 
+              predecirla? Primero porque creemos que podemos, o al menos sus cambios positivos o negativos. 
+              Segundo, porque nos puede ayudar a influir en la misma, sabemos que la política monetaria no puede (con una 
+              política monetaria expansiva lograrias reducir la tasa en el corto plazo, pero es imposible mantener la misma sin
+              aumentar la inflación) pero si puedes con legislaciones sobre salario mínimo, negociación colectiva, seguro de 
+              desempleo y programas de formación. 
+              Con una reducción de desempleo se puede lograr por obviedad menor desempleo pero también una crecida en los bienes
+              y servicios producidos. La disyuntiva entre inflación y desempleo solo existe en el corto plazo (si quieres 
+              investigar más, inicia por la curva de Phillips).</p>
+            <h2>¿Qué es y cómo se mide?</h2>
+            <p style="text-align: justify;">De acuerdo con Marco Antonio Gómez Lovera (2014), la tasa de desocupación es elaborada por el INEGI a partir de 
+              la encuentas nacional de ocupación y empleo (ENOE). <b>El desempleo se define como no tener un trabajo pero querer
+              tenerlo y buscarlo de manera activa</b>. Después existen muchas divisiones, como población en edad de trabajar y 
+              menores respecto a la edad de trabajar, luego, población económicamente activa y población no económicamente activa. 
+              Lo primeros se dividen en ocupados y desocupados. 
+              Para considerar que te encuentras ocupado debes de haber trabajado por lo menos una hora a la semana. De nuevo, las 
+              personas desocupadas son aquellas que no tienen empleo y buscan uno. Al final, muchas personas hoy en días buscan 
+              empleo a través de internet y el motor de búsqueda más usado es Google. Por lo que incrementos en las busquedas de 
+              empleo puede significar mayor personas desempleadas. No obstante, esto no es del todo cierto, ya que puedes buscar 
+              empleo ya teniendo uno.</p>
+            <h2>El análisis</h2>
+            <p style="text-align: justify;">Creemos que un aumento en la tasa de desempleo en tiempo real (que es el aumento de personas reales sin trabajo,
+              no simples números) puede ser predecida con anticipación a la públicada por el INEGI usando las búsquedas en 
+            Google. Sin embargo y a pesar que las interrelaciones reales fueron explicadas anteriormente se hará lo contrario,
+            predecir y buscar las relación búsquedas en google luego cambios en la bolsa de trabajo.</p>
+            <p style="text-align: justify;">Se usarán los datos hasta Noviembre de 2020, si tu ingresas a nuestro producto de 
+              <a href="{{ url_for('plot') }}">Google Trends</a> podrás ver los datos actualizados semana a semana y mes a mes. 
+              Primero en la siguiente ilustración se pueden ver las busquedas de "Bolsa de Trabajo" mes a mes desde el 2016. 
+              Existe una caída en las mismas, la cual puede estar relacionada con la gran cantidad de servicios de Bolsa de 
+              Trabajo.
+              Los valores de bolsa de trabajo a través del tiempo, como los siguientes, es el interés de la búsqueda en relación 
+              con el valor máximo de la búsqueda, por lo que un valor de 100 indica máxima popularidad. Con un intervalo de 
+              confianza de 95%, la prueba de raíz unitaria aumentada Dickey-Fuller rechaza la hipótesis nula por lo que son datos 
+              <b>no estacionarios</b> y por lo tanto tienen raíz unitaria.
+            </p>
+              <img src="{{ url_for('static',filename='blog/google_bolsa_trabajo_value.png') }}" alt="Google Search Trends" class="center py-5 px-1" style="max-width: 100%;">
+            <p style="text-align: justify;">
+              Sin embargo parece que esta generalizado para muchos servicios de bolsa de trabajo como OCC Mundial, 
+              Computrabajo y Linkedin que se ha mantenido estable, no obstante, Indeed ha crecido a través del tiempo; todo 
+              esto durante los últimos 5 años, como se puede ver en la siguiente ilustración. También puede ser debido a que 
+              más empresas tienen su propia bolsa de trabajo, por lo que basta con buscar la organización de tu interés y 
+              sabras las oportunidades que ofrecen.
+            </p>
+              <img src="{{ url_for('static',filename='blog/mas_bolsas_trabajo.png') }}" alt="Más bolsas trabajo" class="center py-5 px-1" style="max-width: 100%;">
+            <p style="text-align: justify;">  
+              Debido al covid-19 la tasa de desempleo (o desocupación como la llama el INEGI) a partir de abril tuvo un gran 
+              pico, mismo que con un análisis "técnico" hubiera sido muy complicado de predecir y es justo el que nos serviría 
+              como test set. Como lo muestra la siguiente ilustración. Como anteriormente, también se ha realizado una prueba 
+              de raíz unitaria aumentada Dickey-Fuller con un intervalo de confianza de 95%, donde también se rechaza la 
+              hipótesis nula por lo que son datos <b>no estacionarios</b>.
+            </p>
+              <img src="{{ url_for('static',filename='blog/unemployment_rate.png') }}" alt="Tasa de desocupación" class="center py-5 px-1" style="max-width: 100%;">
+            <p style="text-align: justify;">
+              Los cambios a través de los meses parecen ser muy similares entre la tasa de desempleo y las búsquedas de Google, 
+              sin embargo, como hemos visto anteriormente, en la siguiente ilustración podemos confirmar que las búsquedas han 
+              caído a lo largo de los años y para la tasa de desempleo una alza en 2020. De nuevo, queremos hacer énfasis en el 
+              Covid-19 no dificultando la relación por cambios cíclicos y aleatorios.
+            </p>
+              <img src="{{ url_for('static',filename='blog/year_monthly.png') }}" alt="Tasa de desocupación" class="center py-5 px-1" style="max-width: 100%;">
+            <p style="text-align: justify;">  
+              La correlación entre ambas variables es de <b>-0.085083</b>, negativa, lo cual no hace sentido con nuestra 
+              hipótesis, sin embargo, con la siguiente ilustración es mas claro el porque ese resultado, tendríamos que 
+              eliminar los valores Covid, no obstante, estos mismos pareciera que siguen también una distribución lineal. 
+              Ahora, si correlacionamos los cambios porcentuales de ambas variables obtenemos un valor de <b>0.26</b> y las 
+              variables retardadas con un valor de <b>0.31</b>.
+              Ajustaremos una regresión lineal para los valores de pre-covid y Covid, para ambos casos el intercepto queda muy 
+              cerca de 3%, valor de pleno empleo, lo cuál quiere decir que a 0 búsquedas en internet, nos encontramos por 
+              debajo de la tasa de pleno empleo, con valores de 2.72% y 2.62% respectivamente. Sin embargo, nuestras R-cuadrado 
+              son muy bajas con 0.166 y 0.290, lo cual hace sentido respecto a nuestros valores de correlación.
+              Teniendo p-valores de los coeficientes representativos para pre-covid, pero no representativos para covid, lo 
+              cual es debido a los pocos valores que tenemos para este caso. Tenemos un error (RMSE) de 0.2% para valores de 
+              pre-covid y 0.6% para valores Covid.
+              Sin embargo, como hemos visto, a través del tiempo han disminuido las búsquedas de esta palabra clave por lo que 
+              es un ajuste que no funciona y debemos optar por ajustar las variables retardadas. Buscando encontrar relación en 
+              sus movimientos (magnitud positiva y negativa).
+            </p>
+              <img src="{{ url_for('static',filename='blog/google_trends_vs_unemployment_rate.png') }}" alt="Tasa de desocupación" class="center py-5 px-1" style="max-width: 100%;">
+            <p style="text-align: justify;">
+              Presumimos anteriormente que ambas series de tiempo son no estacionarias, por lo que probaremos esto con valores 
+              retardados y cambios porcentuales ya que como hemos visto anteriormente la correlación es mayor. Sin embargo 
+              sigue siendo muy laxa y cuando son ajustados, como ya suponíamos los R-cuadrados se mantienen muy bajos 
+              (0.242 & 0.002), por lo que podríamos usar las diferencias retrasadas para valores precovid y normales para covid.
+              Haremos una prueba Granger de causalidad, ya que quremos saber cual es la interacción entre ambas variables, 
+              espcíficamente si una serie de tiempo es la causa Granger de otra serie de tiempo diferida. Aunque dista de nuestro 
+              pensamiento inicial, que la búsqueda de bolsas de trabajo en un mes representan la tasa de desempleo de ese mes. 
+              A pesar de ello, hemos encontrado que las búsquedas de Google causan (Granger) la tasa de desempleo y nos pueden 
+              ayudar a predecir de mejor manera la tasa de desempleo. 
+              Vamos a utilizar los valores pre-covid intentando predecir los valores covid, digamos que haremos un train-test, 
+              pre-covid y covid respectivamente. Ajustando un modelo estadístico VAR (Vector Autoregression), que nos permite 
+              modelar múltiples series de tiempo, capturando la evolución de sus interdependecias entre los valores, tanto los 
+              propios retrasados, como los de las otras series retrasadas. Obteniendo valores significativos retardando 3 meses, 
+              sin autocorrelación de acuerdo con el estadístico Durbin Watson. No obstante se tiene que rechazar la hípotesis 
+              nula del estadístico Jarque Bera de normalidad. Con valores bajos de RMSE y MAE (0.021 y 0.013 respectivamente), 
+              esto sumado a la dificultad de usar este modelo en tiempo real es por ello que hemos decidido colocar en esta 
+              <a href="{{ url_for('plot') }}">liga</a> las predicciónes de regresión lineal simple para valores pre-covid y 
+              covid.
+              Sin embargo y debido a las condiciones en que fue realizado esto no hemos podido encontrar un buen modelo (de 
+              acuerdo a RMSE o R2) que nos ayude a predecir la tasa de desempleo, sin embargo los valores seguirán siendo 
+              almacenados y abiertos para posteriores análisis. Junto con notebook jupyter donde se realizaron las 
+              visualizaciones de este escrito. 
+            </p>
+            <h2>¿Cómo funciona el producto <a href="{{ url_for('unemployment_google') }}">Google Trends</a>?</h2>
+            <p style="text-align: justify;">Utilizamos un <b>pipeline de datos</b> montado sobre Funciones Lambda de AWS que son calendarizadas mediante 
+              cron jobs en Amazon Cloudwatch y terminan en un bucket en S3. Se crean 4 archivos separados por comas para los 
+            datos de INEGI y de pytrends que es el API que utilizamos para obtener los datos de Google Trends. Deseando 
+            mantener completamnete serverless nuestro data-pipeline. Por último, estos datos se consutan mediante boto3 con un 
+            rol dedicado. Para mayor información, puedes visitar este 
+            <a href="https://github.com/mauriciomani/OpenHR/tree/main/aws/google_trends">link</a>.
+            </p>
+            <h2>Conclusiones</h2>
+            <p style="text-align: justify;">Consideramos que es posible predecir cambios en la tasa de desempleo a partir de 
+              movimientos en la búsqueda de bolsas de trabajo, siempre y cuando se aumente y se tenga más claro todas las 
+              búsquedas relacionadas con la búsqueda de trabajo. 
+              No obstante y como hemos mencionado anteriormente no estamos considerando que las búsquedas en Google pueden ser 
+              de personas que buscan cambiar de empleo y no tanto de los que estan desempleados, ya que el internet en México 
+              es usado solo por un 53% de la población, de acuerdo con datos de la Secretaría de Comunicaciones y Transportes.
+              Después del periodo Covid esperaríamos que la tasa de desempleo descendiera, ya que de acuerdo con 
+              Cecilía Barria (2021) puede venir una época de desenfreno sexual y derroche económico, tal como en los años 20s.
+              Actualmente en nuestro producto de <a href="{{ url_for('unemployment_google') }}">Google Trends</a> se pueden ver
+              los valores predichos utilizando dos regresiones lineales simples. Los métodos pueden ser estudiados en este 
+              <a href="https://github.com/mauriciomani/OpenHR/blob/main/documentation/predicting_unemployment.ipynb">Jupyter Notebook</a>.
+              Se ha decidido no poner las predicciones VAR en el producto Google Trends al no estar claro los beneficios y las 
+              dificultades que se pueden presentar con la estructura actual.
+              </p>
+              <h2>Referencias</h2>
+              <p style="text-align: justify;">
+                Barría C. (2021, enero 12). Los nuevos locos años 20: "Después de la pandemia puede venir una época de desenfreno sexual y derroche económico". BBC News, obtenido de www.bbc.com. <br>
+                <br>
+                Gómez, M. A. (2014, mayo 1). ¿Qué es el desempleo y cómo se mide en México? Dinero en Imagen, Obtenido de www.dineroenimagen.com. <br>
+                <br>
+                Mankiw, N. G., Meza y Staines, M. G., & Carril Villarreal, M. d. P. (2012). Principios de economía: N. Gregory Mankiw. México D.F.: Cengage Learning. <br>
+                <br>
+                Secretaría de Comunicaciones y Transportes. (2019, abril 2). En México hay 74.3 millones de usuarios de internet y 18.3 millones de hogares con conexión a este servicio: ENDUTIH 2018. Gobierno de México, Obtenido de www.gob.mx.                
+              </p>
+                
+                
+            
+    
+        </div><!-- /.blog-post -->
+
+      </div><!-- /.blog-main -->
+
+      <aside class="col-md-4 mt-5 blog-sidebar">
+        <div class="p-3 mb-3 bg-light rounded">
+          <h4 class="font-italic">About</h4>
+          <p class="mb-0">Soy un entusiasta de datos que le fascina encontrar maneras interesantes de obtener e integrar distintas fuentes de datos, así como analizar los mismos. Además, mantengo y desarrollo OpenHR.</p>
+        </div>
+
+        <div class="p-3">
+          <h4 class="font-italic">Archives</h4>
+          <ol class="list-unstyled mb-0">
+            <li><a href="#">March 2014</a></li>
+            <li><a href="#">February 2014</a></li>
+            <li><a href="#">January 2014</a></li>
+            <li><a href="#">December 2013</a></li>
+            <li><a href="#">November 2013</a></li>
+            <li><a href="#">October 2013</a></li>
+            <li><a href="#">September 2013</a></li>
+            <li><a href="#">August 2013</a></li>
+            <li><a href="#">July 2013</a></li>
+            <li><a href="#">June 2013</a></li>
+            <li><a href="#">May 2013</a></li>
+            <li><a href="#">April 2013</a></li>
+          </ol>
+        </div>
+
+        <div class="p-3">
+          <h4 class="font-italic">Elsewhere</h4>
+          <ol class="list-unstyled">
+            <li><a href="https://github.com/mauriciomani">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/josemauriciomani/">Linkedin</a></li>
+          </ol>
+        </div>
+      </aside><!-- /.blog-sidebar -->
+
+    </div><!-- /.row -->
+
+  </main>
+
+  {% endblock %}

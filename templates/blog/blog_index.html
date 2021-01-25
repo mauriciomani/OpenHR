@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    {% for blog in blog_entries %}
+    {% for blog in blog_entries|reverse %}
     <div class="mb-4 card">
         <div class="col p-4 d-flex flex-column position-static">
             <strong class="d-inline-block mb-2" style ="color:#0a1845">{{blog['topic']}}</strong>
