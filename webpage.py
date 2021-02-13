@@ -55,13 +55,14 @@ def simple_working_schedule():
     opt_x = lp.simple_working_schedule(group_one, group_two, group_three, group_four, group_five, group_six)   
     return(render_template("lp_simple_solution.html", opt_x = list(map(round, opt_x))))
 
-@app.route("/milp_working_schedule", methods = ["POST"])
-def milp_working_schedule():
+@app.route("/ip_working_schedule", methods = ["POST"])
+def ip_working_schedule():
     #if request.method == 'POST':
     #    fullname = request.form.getlist('field[]')
     #    for value in fullname:  
     #        print(value)    
     #min_wage = request.form['minHoursOne']
+    displayed_results = {}
     min_hours = []
     max_hours = []
     hourly_wages = []
@@ -76,11 +77,20 @@ def milp_working_schedule():
         max_hours.append(int(max_hour))
         hourly_wage =  data[fields[field + 2]] if data[fields[field + 2]] != '' else 0
         hourly_wages.append(int(hourly_wage))
-        #availabilities.append(data[fields[field + 3]])
-    print(min_hours)
-    print(max_hours)
-    print(hourly_wages)
-    return(render_template("lp_milp_solution.html"))
+        availability =  data[fields[field + 3]]
+        availabilities.append(availability)
+    results = lp.ip_working_schedule([min_hours, max_hours, hourly_wages, availabilities])
+    results = {key:val for key, val in results.items() if val > 0}
+    for key, val in results.items():
+        employee_name = key.find("_", 5)
+        if key[5:employee_name] in displayed_results:
+            displayed_results[key[5:employee_name]][key[employee_name+1:].replace("_", ":")] = val
+        else:
+            displayed_results[key[5:employee_name]] = {key[employee_name+1:].replace("_", ":"): val}
+    results = {}
+    for key, val in displayed_results.items():
+        results[key] = list(val.keys())             
+    return(render_template("ip_solution.html", worker = results))
 
 if __name__=="__main__":
     app.run(debug = False)

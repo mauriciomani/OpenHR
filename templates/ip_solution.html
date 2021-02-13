@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %} IP Solution {% endblock %}
+{% block content %}
+<main role="main" class="container mt-4">
+    <div class="pricing-header px-3 py-3 pt-md-4 pb-md-4 mx-auto">
+        <font color="#0a1845">
+            <h1 style="font-weight: bold">Solution</h1>
+            <p class="lead">Proposed solution using simple linear programming for scheduling problem solved with SIMPLEX for the six groups filled before. Kindly use the given number of workers to be used for each 4 hours group.</p>
+        </font>
+    </div>
+    <div class="container">
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Employee 1</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee1 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Employee 2</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee2 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Employee 3</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee3 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Employee 4</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee4 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Employee 5</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee5 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Employee 6</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee6 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Employee 7</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee7 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Employee 8</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        {% for time in worker.employee8 %}
+                        <li>
+                            {{ time }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>  
+{% endblock %}
