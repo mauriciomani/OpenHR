@@ -92,5 +92,9 @@ def ip_working_schedule():
         results[key] = list(val.keys())             
     return(render_template("ip_solution.html", worker = results))
 
+@app.route("/collaborative_filtering")
+def collaborative_filtering():
+    return(render_template("collaborative_filtering.html"))
+
 if __name__=="__main__":
     app.run(debug = False)
